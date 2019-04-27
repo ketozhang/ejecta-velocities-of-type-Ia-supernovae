@@ -1,4 +1,4 @@
-  SN    SN_Host    	 v     G_type  M_k	M_k_err	R_gal R_gal_err	R_sn/R_gal	(R_sn/R_gal)_err	v_siII	vi_siII_err	fu    fg    fr  SN_type
+  SN    SN_Host    	 v     G_type  M_k	M_k_err	R_gal R_gal_err	R_sn/R_gal	(R_sn/R_gal)_err	v_siII	v_siII_err	fu    fg    fr  SN_type
 1998de	NGC252	   	4619   -1.2 -24.98	14	14.43	125	1.54	10	1.13	02	...	  ...	...	 Iabg
 1998dk	UGC139	   	3609	5.1 -22.45	19	15.56	138	0.13	01	1.27	03	0.88  0.88  0.83 IaH
 1998ef	UGC646	   	5019	2.9 -23.78	14	15.46	187	0.15	02	1.33	02	...	  ...	...	 IaH
