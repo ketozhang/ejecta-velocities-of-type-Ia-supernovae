@@ -82,18 +82,18 @@ def simulate_grid(vs_data, param_grid, **kwargs):
         vs = model_vdist(**params, **kwargs)
         ks, pvalue = ks_2samp(vs_data, vs)
 
-        if i < 10:
+        if i < 100:
             scores['vs'].append(vs)
             scores['ks'].append(ks)
             scores['pvalue'].append(pvalue)
             scores['params'].append(params)
         else:
-            min_idx = np.argmin(scores['ks'])
-            if ks < scores['ks'][min_idx]:
-                scores['vs'].insert(min_idx, vs)
-                scores['ks'].insert(min_idx, ks)
-                scores['pvalue'].insert(min_idx, pvalue)
-                scores['params'].insert(min_idx, params)
+            max_idx = np.argmax(scores['ks'])
+            if ks < scores['ks'][max_idx]:
+                scores['vs'][max_idx]= vs
+                scores['ks'][max_idx]= ks
+                scores['pvalue'][max_idx]= pvalue
+                scores['params'][max_idx]= params
 
         if (i != 0) and (i % (nparams / 100) == 0):
             end = time.perf_counter()
