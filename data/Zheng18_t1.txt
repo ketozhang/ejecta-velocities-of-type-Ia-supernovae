@@ -1,0 +1,66 @@
+# Table 1
+# Full Type Ia Supernova Sample
+#
+#
+SN	Subtype	z	z'^a	v_siII	v_siII_err
+1998dh	Ia-norm	0.0077	0.0082	11.1	0.5
+1998dm	Ia-norm	0.0055	0.0062	10.6	0.3
+1999cp	Ia-norm	0.0103	0.0103	10.6	0.3
+1999dq	Ia-99aa	0.0137	0.0130	10.9	0.1
+1999gp	Ia-norm	0.0260	0.0268	11.0	0.2
+2000cx	Ia-pec	0.0070	0.0073	11.7	0.2
+2000dn	Ia-norm	0.0308	0.0316	10.2	0.2
+2000dr	Ia-norm	0.0178	0.0183	10.5	0.3
+2000fa	Ia-norm	0.0218	0.0223	12.0	0.2
+2001en	Ia-norm	0.0153	0.0133	12.5	0.4
+2001ep	Ia-norm	0.0129	0.0127	10.3	0.3
+2002bo	Ia-norm	0.0053	0.0060	13.0	0.3
+2002cr	Ia-norm	0.0103	0.0103	10.7	0.3
+2002dj	Ia-norm	0.0104	0.0091	14.5	0.3
+2002dl	Ia-pec	0.0152	0.0152	10.6	0.4
+2002eb	Ia-norm	0.0265	0.0274	10.3	0.4
+2002er	Ia-norm	0.0090	0.0092	11.8	0.4
+2002fk	Ia-norm	0.0070	0.0073	9.8	0.3
+2002 ha	Ia-norm	0.0132	0.0135	10.8	0.1
+2002he	Ia-norm	0.0248	0.0253	12.4	0.1
+2003cg	Ia-norm	0.0053	0.0053	10.9	0.2
+2003fa	Ia-99aa	0.0391	0.0408	11.2	0.4
+2003gn	Ia-norm	0.0333	0.0339	12.0	0.3
+2003gt	Ia-norm	0.0150	0.0154	11.1	0.4
+2003W	Ia-norm	0.0211	0.0211	14.8	0.4
+2003Y	Ia-91bg	0.0173	0.0170	9.8	0.3
+2004at	Ia-norm	0.0240	0.0239	11.3	0.1
+2004dt	Ia-norm	0.0185	0.0198	13.3	0.3
+2004ef	Ia-norm	0.0298	0.0301	12.8	0.4
+2004eo	Ia-norm	0.0148	0.0154	10.8	0.4
+2005cf	Ia-norm	0.0070	0.0071	10.1	0.1
+2005de	Ia-norm	0.0149	0.0151	10.2	0.2
+2005ki	Ia-norm	0.0203	0.0200	11.1	0.2
+2005M	Ia-91T	0.0230	0.0255	10.6	0.2
+2006cp	Ia-norm	0.0233	0.0222	13.6	0.3
+2006gr	Ia-norm	0.0335	0.0342	11.4	0.3
+2006le	Ia-norm	0.0172	0.0189	11.6	0.3
+2006X	Ia-norm	0.0064	0.0059	14.7	0.1
+2007af	Ia-norm	0.0062	0.0062	10.6	0.1
+2007le	Ia-norm	0.0067	0.0063	14.0	0.4
+2007qe	Ia-norm	0.0244	0.0195	14.1	0.3
+2008bf	Ia-norm	0.0251	0.0271	11.5	0.2
+2008ec	Ia-norm	0.0149	0.0158	10.5	0.1
+2001V	Ia-norm	0.0162	0.0156	11.6	0.3
+2005hk	Iax	0.0118	0.0118  5.7	0.3
+2006ax	Ia-norm	0.0180	0.0179	10.5	0.1
+2006lf	Ia-norm	0.0130	0.0120	11.4	0.4
+2007bd	Ia-norm	0.0319	0.0317	12.8	0.4
+2007ci	Ia-norm	0.0194	0.0178	11.8	0.2
+2005kc	Ia-norm	0.0137	0.0145	10.6	0.3
+2007on	Ia-norm	0.0062	0.0074	11.3	0.3
+2008bc	Ia-norm	0.0157	0.0156	11.6	0.2
+2008gp	Ia-norm	0.0328	0.0338	11.3	0.4
+2008hv	Ia-norm	0.0125	0.0140	10.9	0.2
+# Notes
+# ^a Flow-corrected
+# ^b Measured from Si II lambda6355, and in units of k km s^-1.
+# ^c Detailed references: E06, Elias-Rosa et al. 2006; P07, Phillips et al. 2007; G08, Garnavich 2008; S12, Silverman et al. 2012; F13, Folatelli et al. 2013; S15, Silverman et al. 2015; Z18, this work.
+# ^d A_V from MLCS2k2 fitting with R_V = 1.8.
+# ^e Larger-number groups are included in the smaller-number groups.
+# ^f Used the extrapolation method; see the text for details.

@@ -1,4 +1,6 @@
 .ipynb_checkpoints/
+.vscode/
 __pycache__/
 
+*.code-workspace
 kaepora_v1.db
