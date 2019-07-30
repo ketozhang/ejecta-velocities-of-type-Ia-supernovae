@@ -17,7 +17,7 @@ def model(lv_dist, theta, delta_v, **kwargs):
     hv = lv_dist.rvs(hv_size)
     los = np.random.uniform(0, 180, len(hv))
     lv_cond = los > theta
-    hv = np.choose(lv_cond, [hv + delta_v, hv])
+    hv = np.choose(lv_cond, [hv + delta_v*(theta-los)/theta, hv])
     return np.hstack((lv, hv))
 
 
@@ -26,7 +26,7 @@ def lnlike(v_data, v_sim):
 
 
 def lnprior(theta, delta_v):
-    invalid = ~(theta >= 0 and theta <= 180 and delta_v >= 0)
+    invalid = ~(theta >= 0 and theta <= 80 and delta_v >= 0 and delta_v <= 6000)
     if invalid:
         return -np.inf
 
@@ -34,8 +34,8 @@ def lnprior(theta, delta_v):
 
     lv_mu, lv_sigma = BIMODAL_PARAMS[:2]
     hv_mu, hv_sigma = BIMODAL_PARAMS[2:4]
-    delta_v_dist = norm(hv_mu - lv_mu, np.sqrt(hv_sigma ** 2 + lv_sigma ** 2))
-    lp += delta_v_dist.logpdf(delta_v)
+    # delta_v_dist = norm(hv_mu - lv_mu, np.sqrt(hv_sigma ** 2 + lv_sigma ** 2))
+    # lp += delta_v_dist.logpdf(delta_v)
 
     return lp
 
@@ -70,7 +70,7 @@ def simulate(v_data, lv_dist, **kwargs):
     pos = np.array(
         [
             np.random.normal(45, 90 / 3, nwalkers),  # theta
-            np.random.normal(5000, 5000 / 3, nwalkers),
+            np.random.normal(3000, 3000 / 3, nwalkers),
         ]
     ).T
     sampler.run_mcmc(pos, steps)

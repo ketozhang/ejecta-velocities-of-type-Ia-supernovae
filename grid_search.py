@@ -13,8 +13,9 @@ BIMODAL_PARAMS = np.loadtxt("bimodal_params.csv", delimiter=",")
 def model(lv_dist, theta, delta_v, **kwargs):
     size = kwargs.pop("size", 10000)
     lv = lv_dist.rvs(size)
-    hv = lv + delta_v
     los = np.random.uniform(0, 180, len(lv))
+    # hv = lv + delta_v
+    hv = lv + delta_v*((theta - los) / theta)
     lv_cond = los > theta
 
     v_sim = np.choose(lv_cond, [hv, lv])
@@ -47,7 +48,7 @@ def simulate(v_data, lv_dist, param_grid, **kwargs):
             scores["params"].append(params)
             scores["v_sim"].append(v_sim)
         else:
-            lowest_idx = np.argmin(scores["pvalue"])
+            lowest_idx = np.argmin(scores["ks"])
             if ks < scores["ks"][lowest_idx]:
                 scores["ks"][lowest_idx] = ks
                 scores["pvalue"][lowest_idx] = pvalue
@@ -74,7 +75,7 @@ if __name__ == "__main__":
 
     param_grid = {
         "theta": np.arange(0, 181, 5),
-        "delta_v": np.arange(500, 20501, 500),
+        "delta_v": np.arange(3000, 7501, 500),
     }
 
     scores = simulate(v_data, lv_dist, param_grid, sample_size=int(1e5))
