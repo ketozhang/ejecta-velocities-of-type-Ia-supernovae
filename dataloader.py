@@ -55,7 +55,7 @@ def import_zheng18(fname='Zheng18_t1.txt'):
 
 
 def import_kaepora(fname='kaepora_v1.db'):
-    con = sqlite3.connect(DATA_PATH/fname)
+    con = sqlite3.connect(str(DATA_PATH/fname))
     query = "SELECT * FROM Events;"
     df = pd.read_sql(query, con)[['SN', 'V_at_max', 'V_err']].set_index('SN')
     colname = ['v_siII', 'v_siII_err']

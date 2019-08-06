@@ -9,18 +9,23 @@ from dataloader import import_kaepora
 
 PROJECT_PATH = Path(__file__).resolve().parent
 RESULTS_PATH = PROJECT_PATH / 'results'
+RNG = np.random.RandomState(seed=822)
 
 # [mu_lv, sigma_lv, mu_hv, sigma_hv, mixing_parameter]
-BIMODAL_PARAMS = np.loadtxt("bimodal_params.csv", delimiter=",")
+BIMODAL_PARAMS = np.loadtxt(str(RESULTS_PATH/"bimodal_params.csv"), delimiter=",")
 
 
-def model(lv_dist, theta, delta_v, size=10000):
+def model(lv_dist, theta, delta_v, **kwargs):
+    sample_size = kwargs.pop('sample_size', 10000)
+    g = BIMODAL_PARAMS[4]  # mixing parameter
+    lv_size = int(sample_size * g)
+    hv_size = sample_size - lv_size
+
     # Take sample from the low velocity distribution
-    lv = lv_dist.rvs(size)
+    lv = lv_dist.rvs(hv_size, random_state=RNG)
 
     # Take sample of the line of sight
-    los = np.random.uniform(0, 180, len(lv))
-
+    los = RNG.uniform(0, 180, len(lv))
 
     # hv = lv + delta_v  # constant velocity
     hv = lv + delta_v*((theta - los) / theta)  # linear velocity
@@ -28,7 +33,12 @@ def model(lv_dist, theta, delta_v, size=10000):
     # For each data point in hv and lv:
     # Use hv's data point if line of sight is within theta otherwise use lv data point
     lv_cond = los > theta
-    v_sim = np.choose(lv_cond, [hv, lv])
+    hv = np.choose(lv_cond, [hv, lv])
+
+    # Now take a sample from the low velocity distribution and do nothing to it
+    lv = lv_dist.rvs(lv_size, random_state=RNG)
+
+    v_sim = np.hstack((lv, hv))
     return v_sim
 
 
@@ -58,6 +68,7 @@ def simulate(v_data, lv_dist, param_grid, **kwargs):
     param_grid = ParameterGrid(param_grid)
 
     # The following scores will be stored for each set of parameters
+    all_scores = {"ks": [], "pvalue": [], "params": []}
     scores = {"ks": [], "pvalue": [], "params": [], "v_sim": []}
 
     nparams = len(param_grid)
@@ -66,7 +77,7 @@ def simulate(v_data, lv_dist, param_grid, **kwargs):
 
     for i, params in enumerate(param_grid):
         # Observe the model and return the observed (simulated) velocity data
-        v_sim = model(lv_dist, params['theta'], params['delta_v'])
+        v_sim = model(lv_dist, params['theta'], params['delta_v'], **kwargs)
 
         # Compute KS values
         ks, pvalue = ks_2samp(v_data, v_sim)
@@ -79,6 +90,9 @@ def simulate(v_data, lv_dist, param_grid, **kwargs):
         #     plt.show()
 
         # Keeping only the top 100 models chosen by their KS score
+        all_scores["ks"].append(ks)
+        all_scores["pvalue"].append(pvalue)
+        all_scores["params"].append(params)
         if i < 100:
             scores["ks"].append(ks)
             scores["pvalue"].append(pvalue)
@@ -105,7 +119,8 @@ def simulate(v_data, lv_dist, param_grid, **kwargs):
 
     # Conver score from Python list to numpy array
     scores = {k: np.array(v) for k, v in scores.items()}
-    return scores
+    all_scores = {k: np.array(v) for k, v in scores.items()}
+    return scores, all_scores
 
 
 if __name__ == "__main__":
@@ -123,7 +138,9 @@ if __name__ == "__main__":
     }
 
     # Start simulation and save scores
-    scores = simulate(v_data, lv_dist, param_grid, sample_size=int(1e5))
+    scores, all_scores = simulate(v_data, lv_dist, param_grid, sample_size=int(1e5))
     with open(RESULTS_PATH/"scores.pkl", "wb") as f:
         # pkl.dump({k: v[:10] for k, v in scores.items()}, f)
         pkl.dump(scores, f)
+    with open(RESULTS_PATH/"all_scores.pkl", "wb") as f:
+        pkl.dump(all_scores, f)
