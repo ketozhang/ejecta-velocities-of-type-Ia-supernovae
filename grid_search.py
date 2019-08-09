@@ -24,8 +24,9 @@ def model(lv_dist, theta, delta_v, **kwargs):
     # Take sample from the low velocity distribution
     lv = lv_dist.rvs(hv_size, random_state=RNG)
 
-    # Take sample of the line of sight
-    los = RNG.uniform(0, 180, len(lv))
+    # Take sample of the line of sight using uniform RV to spherical transformation
+    rv = np.random.uniform(0,1, hv_size)
+    los = np.degrees(np.arccos(2*rv - 1))
 
     # hv = lv + delta_v  # constant velocity
     hv = lv + delta_v*((theta - los) / theta)  # linear velocity

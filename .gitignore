@@ -3,5 +3,5 @@
 __pycache__/
 
 *.code-workspace
-results/scores.pkl
+*.pkl
 kaepora_v1.db
