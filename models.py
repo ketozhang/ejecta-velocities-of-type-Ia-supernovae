@@ -34,8 +34,7 @@ def unimodal_fit(x, params):
 
     def loss(params):
         mu, sigma = params
-        # N = len(x)
-        N = 1
+        N = len(x)
         prob = N * gaussian(x, mu, sigma)
         lnl = sum(np.log(prob))
         return -lnl
@@ -50,8 +49,7 @@ def bimodal_fit(x, params):
 
     def loss(params):
         mu1, sigma1, mu2, sigma2, n1 = params
-        # N = len(x)
-        N = 1
+        N = len(x)
         prob1 = gaussian(x, mu1, sigma1)
         prob2 = gaussian(x, mu2, sigma2)
         prob = n1 * prob1 + (N - n1) * prob2
@@ -82,9 +80,9 @@ if __name__ == "__main__":
         np.savetxt(str(RESULTS_PATH / "unimodal_params.csv"), result.x, delimiter=',')
 
     print("\nBimodal")
-    result = bimodal_fit(np.array(data), [11000, 700, 14000, 1200, 200/311])
+    result = bimodal_fit(np.array(data), [11000, 700, 14000, 1200, 200])
     fitted_params = result.x
-    fitted_params[4] = fitted_params[4]
+    fitted_params[4] = fitted_params[4] / len(data)
     print(-result.fun, fitted_params)
     if result.success:
         np.savetxt(str(RESULTS_PATH / "bimodal_params.csv"), result.x, delimiter=',')

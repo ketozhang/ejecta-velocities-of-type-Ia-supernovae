@@ -21,9 +21,8 @@ def model(lv_dist, theta, delta_v, **kwargs):
     # Take sample from the low velocity distribution
     lv = lv_dist.rvs(sample_size, random_state=RNG)
 
-    # Take sample of the line of sight using uniform RV to spherical transformation
-    rv = np.random.uniform(0,1, sample_size)
-    los = np.degrees(np.arccos(2*rv - 1))
+    # Take sample of the line of sight
+    los = RNG.uniform(0, 180, len(lv))
 
     # hv = lv + delta_v  # constant velocity
     hv = lv + delta_v*((theta - los) / theta)  # linear velocity
@@ -127,7 +126,7 @@ if __name__ == "__main__":
     # Set the range for each parameter in the parameter grid
     param_grid = {
         "theta": np.arange(0, 181, 5),
-        "delta_v": np.arange(3000, 10001, 500),
+        "delta_v": np.arange(3000, 7501, 500),
     }
 
     # Start simulation and save scores

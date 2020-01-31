@@ -3,5 +3,4 @@
 __pycache__/
 
 *.code-workspace
-*.pkl
 kaepora_v1.db
