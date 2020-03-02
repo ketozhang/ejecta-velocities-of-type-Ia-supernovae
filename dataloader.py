@@ -64,9 +64,12 @@ def import_zheng18(fname="Zheng18_t1.txt"):
 def import_kaepora(fname="kaepora_v1.db"):
     con = sqlite3.connect(str(DATA_PATH / fname))
     query = "SELECT * FROM Events;"
-    df = pd.read_sql(query, con)[["SN", "V_at_max", "V_err"]].set_index("SN")
-    colname = ["v_siII", "v_siII_err"]
-    df = df.rename(columns={"V_at_max": "v_siII", "V_err": "v_siII_err"})
+    df = pd.read_sql(query, con)[["SN", "V_at_max", "V_err", "Redshift"]].set_index(
+        "SN"
+    )
+    df = df.rename(
+        columns={"V_at_max": "v_siII", "V_err": "v_siII_err", "Redshift": "z"}
+    )
     df["v_siII"] = -df["v_siII"] * 10 ** 3
     df["v_siII_err"] = df["v_siII_err"] * 10 ** 3
     df = clean_sn_data(df)
