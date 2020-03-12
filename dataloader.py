@@ -78,11 +78,10 @@ def import_kaepora(fname="kaepora_v1.db"):
 
 
 def clean_sn_data(df):
-    df = (
-        df.loc[~df["v_siII"].isnull(), :]  # Remove null data
-        # Filter 5000 < v <= 20000
-        .loc[(df["v_siII"] > 5000) & (df["v_siII"] <= 20000)]
-    )
+    # Remove null data
+    df = df.loc[~df["v_siII"].isnull(), :]
+
+    # Fix SN name to be follow sn<yyyy><abcd>
     df.index = map(lambda x: x.lower().replace(" ", "").replace("sn", ""), df.index)
     return df
 
@@ -125,45 +124,23 @@ def import_kasen07(fname="Kasen07.txt"):
 
 if __name__ == "__main__":
     from itertools import cycle
-    import seaborn as sns
-    import matplotlib.pyplot as plt
-
-    sns.set(style="whitegrid", color_codes=True)
-    colors = cycle(["r", "b", "g", "orange", "purple", "black"])
-    shapes = cycle(["o", "+", "d", "^", "s"])
 
     ts = import_all_data(merge=False)
+    kaepora = import_kaepora()
     sns_nokaepora = set()
+    sns_kaepora_overlap = set()
     sns = set()
-    plt.figure(figsize=(25, 5))
     for t in ts:
         t["source"] = t.index.name
         sns.update(t.index)
+
         if t.index.name != "kaepora":
             sns_nokaepora.update(t.index)
+            sns_kaepora_overlap.update(set(t.index).intersection(set(kaepora.index)))
 
     for t in ts:
-        plt.scatter(
-            t.index,
-            t["v_siII"],
-            label=t.index.name,
-            marker=next(shapes),
-            color=next(colors),
-        )
         print(f"{t.index.name} Size: {len(t)}")
 
     print(f"Total Dataset Size (w/o kaepora): {len(sns_nokaepora)}")
     print(f"Total Dataset Size: {len(sns)}")
-
-    # df = import_all_data()
-    # with open('sn_v_siII2.txt', 'w') as f:
-    #     pd.options.display.max_rows = len(df)
-    #     f.write(df[['source', 'v_siII', 'v_siII_err']].__repr__())
-    # with open('sn_v_siII_pivoted2.txt', 'w') as f:
-    #     f.write(df.pivot(columns='source').__repr__())
-    # print(pd.read_csv('sn_v_siII.txt', sep='\s+').head())
-    # print(pd.read_csv('sn_v_siII_pivoted.txt', sep='\s+').head())
-
-    # plt.xticks(rotation=90)
-    # plt.legend()
-    # plt.show()
+    print(f"KAEPORA Overlap Size: {len(sns_kaepora_overlap)}")

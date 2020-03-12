@@ -5,9 +5,6 @@ import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit, minimize
 from scipy.stats import norm
 
-PROJECT_PATH = Path(__file__).resolve().parent
-RESULTS_PATH = PROJECT_PATH / 'results'
-
 
 def gaussian(x, mu=0, sigma=1):
     """Gaussian PDF"""
@@ -64,6 +61,10 @@ def bimodal_fit(x, params):
 if __name__ == "__main__":
     from dataloader import import_kaepora
 
+    PROJECT_PATH = Path(__file__).resolve().parent
+    RESULTS_PATH = PROJECT_PATH / "results"
+
+    # Replace data with this for a sanity check
     # data = np.hstack(
     #     (
     #         norm.rvs(loc=10000, scale=700, size=10000),
@@ -77,7 +78,7 @@ if __name__ == "__main__":
     fitted_params = result.x
     print(-result.fun, fitted_params)
     if result.success:
-        np.savetxt(str(RESULTS_PATH / "unimodal_params.csv"), result.x, delimiter=',')
+        np.savetxt(str(RESULTS_PATH / "unimodal_params.csv"), result.x, delimiter=",")
 
     print("\nBimodal")
     result = bimodal_fit(np.array(data), [11000, 700, 14000, 1200, 200])
@@ -85,12 +86,4 @@ if __name__ == "__main__":
     fitted_params[4] = fitted_params[4] / len(data)
     print(-result.fun, fitted_params)
     if result.success:
-        np.savetxt(str(RESULTS_PATH / "bimodal_params.csv"), result.x, delimiter=',')
-
-    # value, bins, _ = plt.hist(data, bins=20, density=True)
-    # xrange = np.linspace(np.min(bins), np.max(bins), 100)
-    # g1 = fitted_params[0] / len(data)
-    # g2 = 1 - g1
-    # plt.plot(xrange, g1 * gaussian(xrange, *fitted_params[0:2]), color="r")
-    # plt.plot(xrange, g2 * gaussian(xrange, *fitted_params[2:4]), color="r")
-    # plt.show()
+        np.savetxt(str(RESULTS_PATH / "bimodal_params.csv"), result.x, delimiter=",")

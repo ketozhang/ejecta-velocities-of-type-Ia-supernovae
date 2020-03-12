@@ -99,6 +99,7 @@ def simulate(model, v_data, lv_dist, param_grid, **kwargs):
 
     # The following scores will be stored for each set of parameters
     scores = {"ks": [], "pvalue": [], "params": [], "v_sim": []}
+    all_scores = {"ks": [], "pvalue": [], "params": []}
 
     nparams = len(param_grid)
     start = time.perf_counter()
@@ -133,6 +134,10 @@ def simulate(model, v_data, lv_dist, param_grid, **kwargs):
                 scores["params"][largest_idx] = params
                 scores["v_sim"][largest_idx] = v_sim
 
+        all_scores["ks"].append(ks)
+        all_scores["pvalue"].append(pvalue)
+        all_scores["params"].append(params)
+
         # Print results and ETA
         end = time.perf_counter()
         elapsed_times.append(end - start)
@@ -145,7 +150,7 @@ def simulate(model, v_data, lv_dist, param_grid, **kwargs):
 
     # Conver score from Python list to numpy array
     scores = {k: np.array(v) for k, v in scores.items()}
-    return scores
+    return scores, all_scores
 
 
 if __name__ == "__main__":
@@ -164,12 +169,22 @@ if __name__ == "__main__":
 
     # Simulation v2
     # start simulation and save scores
-    scores = simulate(model_v2, v_data, lv_dist, param_grid, sample_size=int(1e5))
+    scores, all_scores = simulate(
+        model_v2, v_data, lv_dist, param_grid, sample_size=int(1e5)
+    )
     with open(RESULTS_PATH / "scores_v2.pkl", "wb") as f:
         pkl.dump(scores, f)
 
+    with open(RESULTS_PATH / "all_scores_v2.pkl", "wb") as f:
+        pkl.dump(all_scores, f)
+
     # Simulation v3
     # start simulation and save scores
-    scores = simulate(model_v3, v_data, lv_dist, param_grid, sample_size=int(1e5))
+    scores, all_scores = simulate(
+        model_v3, v_data, lv_dist, param_grid, sample_size=int(1e5)
+    )
     with open(RESULTS_PATH / "scores_v3.pkl", "wb") as f:
         pkl.dump(scores, f)
+
+    with open(RESULTS_PATH / "all_scores_v3.pkl", "wb") as f:
+        pkl.dump(all_scores, f)
