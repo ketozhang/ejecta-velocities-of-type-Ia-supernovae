@@ -10,6 +10,7 @@ from dataloader import import_kaepora
 
 PROJECT_PATH = Path(__file__).resolve().parent
 RESULTS_PATH = PROJECT_PATH / "results"
+VERBOSE = False
 
 # [mu_lv, sigma_lv, mu_hv, sigma_hv, mixing_parameter]
 BIMODAL_PARAMS = np.loadtxt(str(RESULTS_PATH / "bimodal_params.csv"), delimiter=",")
@@ -33,8 +34,8 @@ def model_v2(lv_dist, theta, delta_v, **kwargs):
     # hv = lv + delta_v  # constant velocity
     hv = lv + delta_v * ((theta - los) / theta)  # linear velocity
 
-    # For each data point in hv and lv:
-    # Use hv's data point if line of sight is within theta otherwise use lv data point
+    # For each data point in hv and lv,
+    # use hv's data point if line of sight is within theta otherwise use lv data point
     lv_cond = los > theta
     hv = np.choose(lv_cond, [hv, lv])
 
@@ -119,8 +120,12 @@ def simulate(model, v_data, lv_dist, param_grid, **kwargs):
         #     plt.legend()
         #     plt.show()
 
-        # Keeping only the top 100 models chosen by their KS score
-        if i < 100:
+        all_scores["ks"].append(ks)
+        all_scores["pvalue"].append(pvalue)
+        all_scores["params"].append(params)
+
+        # For top 10 models, keep both score and sample
+        if i < 10:
             scores["ks"].append(ks)
             scores["pvalue"].append(pvalue)
             scores["params"].append(params)
@@ -134,26 +139,25 @@ def simulate(model, v_data, lv_dist, param_grid, **kwargs):
                 scores["params"][largest_idx] = params
                 scores["v_sim"][largest_idx] = v_sim
 
-        all_scores["ks"].append(ks)
-        all_scores["pvalue"].append(pvalue)
-        all_scores["params"].append(params)
-
         # Print results and ETA
         end = time.perf_counter()
         elapsed_times.append(end - start)
         mean_step_period = np.mean(elapsed_times)
         if i % (nparams // 100) == 0 or i > nparams - 10:
-            print(f"{params} -> {ks, pvalue}")
-            print(f"Step [{i}/{nparams}] ", end="")
+            if VERBOSE:
+                print(f"{params} -> {ks, pvalue}")
+                print(f"Step [{i}/{nparams}] ", end="")
             print(f"ETA: {(nparams - i) * mean_step_period:.2f} secs")
         start = time.perf_counter()
 
-    # Conver score from Python list to numpy array
+    # Convert score from Python list to numpy array
     scores = {k: np.array(v) for k, v in scores.items()}
     return scores, all_scores
 
 
 if __name__ == "__main__":
+    if "-v" in sys.argv[1:]:
+        VERBOSE = True
     # Velocity data
     v_data = import_kaepora()["v_siII"]
 
@@ -163,8 +167,8 @@ if __name__ == "__main__":
 
     # Set the range for each parameter in the parameter space
     param_grid = {
-        "theta": np.arange(0, 181, 5),
-        "delta_v": np.arange(3000, 7501, 500),
+        "theta": np.arange(0, 181, 1),
+        "delta_v": np.arange(3000, 7501, 100),
     }
 
     # Simulation v2
