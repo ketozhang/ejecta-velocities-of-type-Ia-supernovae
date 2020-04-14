@@ -72,16 +72,16 @@ def bimodal_fit(x, guess_params):
     return result
 
 
-def binned_fit(x, guess_params, pdf, bins=20, **kwargs):
+def binned_fit(x, guess_params, pdf, bins=30, **kwargs):
     # Bin data
     N = len(x)
     y, bins = np.histogram(x, bins)
     bin_width = np.mean(bins[1:] - bins[:-1])
+    bin_midpoints = (bins[1:] + bins[:-1]) / 2
 
     # Predict and calculate loss
     def loss(params):
         """L2 loss"""
-        bin_midpoints = (bins[1:] + bins[:-1]) / 2
         y_pred = bin_width * pdf(bin_midpoints, *params)
         return np.sum((y - y_pred) ** 2)
 

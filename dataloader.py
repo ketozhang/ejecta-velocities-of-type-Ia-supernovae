@@ -131,7 +131,6 @@ if __name__ == "__main__":
     sns_kaepora_overlap = set()
     sns = set()
     for t in ts:
-        t["source"] = t.index.name
         sns.update(t.index)
 
         if t.index.name != "kaepora":
