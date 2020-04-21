@@ -21,6 +21,10 @@ def gaussian(x, mu=0, sigma=1, N=1):
     return N * norm.pdf(x, mu, sigma)
 
 
+def gaussian_cdf(x, *args, **kwargs):
+    return norm.cdf(x, *args, **kwargs)
+
+
 def bimodal_gaussian(x, mu1=0, sigma1=1, mu2=0, sigma2=1, g=0.5, N=1):
     """Bimodal independent Gaussian PDF.
 
@@ -38,6 +42,10 @@ def bimodal_gaussian(x, mu1=0, sigma1=1, mu2=0, sigma2=1, g=0.5, N=1):
         float: The density at x. The density is either a probability density or number density depending on `N`.
     """
     return g * gaussian(x, mu1, sigma1) + (N - g) * gaussian(x, mu2, sigma2)
+
+
+def bimodal_gaussian_cdf(x, mu1=0, sigma1=1, mu2=0, sigma2=1, g=0.5, N=1):
+    return g * norm.cdf(x, mu1, sigma1) + (N - g) * norm.cdf(x, mu2, sigma2)
 
 
 def unimodal_fit(x, guess_params):
@@ -122,10 +130,11 @@ if __name__ == "__main__":
         np.savetxt(str(RESULTS_PATH / "bimodal_params.csv"), result.x, delimiter=",")
 
     print("\nBinned Unimodal")
+    bins = np.arange(7000, 17001, 500)
     result = binned_fit(
         np.array(data),
         [np.mean(data), np.std(data)],
-        bins=30,
+        bins=bins,
         pdf=lambda *args: gaussian(*args, N=len(data)),
     )
     fitted_params = result.x
@@ -136,10 +145,11 @@ if __name__ == "__main__":
         )
 
     print("\nBinned Bimodal")
+    bins = np.arange(7000, 16001, 1000)
     result = binned_fit(
         np.array(data),
         [11000, 700, 14000, 1200, 200],
-        bins=30,
+        bins=bins,
         pdf=lambda *args: bimodal_gaussian(*args, N=len(data)),
     )
     fitted_params = result.x

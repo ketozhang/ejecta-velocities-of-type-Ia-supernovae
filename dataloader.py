@@ -99,6 +99,11 @@ def import_all_data(merge=True):
         return [wang13, folatelli13, foley11, zheng18, kaepora]
 
 
+def get_total_size():
+    df = import_all_data(merge=True)
+    return len(set(df))
+
+
 ###
 # SNe Model Data
 ###
@@ -139,6 +144,8 @@ if __name__ == "__main__":
 
     for t in ts:
         print(f"{t.index.name} Size: {len(t)}")
+
+    pd.DataFrame(sorted(sns)).to_csv("test.txt", sep=" ")
 
     print(f"Total Dataset Size (w/o kaepora): {len(sns_nokaepora)}")
     print(f"Total Dataset Size: {len(sns)}")
