@@ -130,7 +130,7 @@ if __name__ == "__main__":
         np.savetxt(str(RESULTS_PATH / "bimodal_params.csv"), result.x, delimiter=",")
 
     print("\nBinned Unimodal")
-    bins = np.arange(7000, 17001, 500)
+    bins = np.arange(9000, 13500 + 1, 500)
     result = binned_fit(
         np.array(data),
         [np.mean(data), np.std(data)],
@@ -145,7 +145,7 @@ if __name__ == "__main__":
         )
 
     print("\nBinned Bimodal")
-    bins = np.arange(7000, 16001, 1000)
+    bins = np.arange(9000, 13500 + 1, 500)
     result = binned_fit(
         np.array(data),
         [11000, 700, 14000, 1200, 200],
