@@ -25,6 +25,10 @@ def import_wang13(fname="Wang13_ts1.txt"):
 
 
 def import_folatelli13(fname="Folatelli13_t3.txt"):
+    import warnings
+
+    warnings.filterwarnings("ignore", category=UserWarning)
+
     df = ascii.read(DATA_PATH / fname, format="cds").to_pandas()
     df = df[["Name", "SiII-6355", "e_SiII-6355"]]
     df = df.rename(
