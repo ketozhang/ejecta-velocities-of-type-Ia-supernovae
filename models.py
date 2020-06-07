@@ -48,35 +48,71 @@ def bimodal_gaussian_cdf(x, mu1=0, sigma1=1, mu2=0, sigma2=1, g=0.5, N=1):
     return g * norm.cdf(x, mu1, sigma1) + (N - g) * norm.cdf(x, mu2, sigma2)
 
 
-def unimodal_fit(x, guess_params):
+def unimodal_fit(x, guess_params, method="Nelder-Mead", **kwargs):
     """Un-normalized unimodial Gaussian fit on some data `x`"""
+    N = len(x)
 
     def loss(params):
         mu, sigma = params
-        N = len(x)
-        prob = N * gaussian(x, mu, sigma)
+        prob = gaussian(x, mu, sigma)
         lnl = sum(np.log(prob))
         return -lnl
 
-    result = minimize(loss, guess_params, method="Nelder-Mead")
+    result = minimize(loss, guess_params, method=method, **kwargs)
     print(result.message)
     return result
 
 
-def bimodal_fit(x, guess_params):
+def bimodal_fit(x, guess_params, method="Nelder-Mead", **kwargs):
     """Un-normalized bimodial Gaussian fit on some data `x`"""
+    N = len(x)
 
     def loss(params):
         mu1, sigma1, mu2, sigma2, n1 = params
-        N = len(x)
+        n1 = n1 / N
         prob1 = gaussian(x, mu1, sigma1)
         prob2 = gaussian(x, mu2, sigma2)
-        prob = n1 * prob1 + (N - n1) * prob2
-        lnl = sum(np.log(prob))
+        prob = n1 * prob1 + (1 - n1) * prob2
+
+        lnl = np.sum(np.log(prob))
         return -lnl
 
-    result = minimize(loss, guess_params, method="Nelder-Mead")
-    print(result.message)
+    result = minimize(loss, guess_params, method=method, **kwargs)
+    return result
+
+
+def multimodal_fit(x, guess_params, method="Nelder-Mead", **kwargs):
+    """Un-normalized multimodal Gaussian fit on same data `x`
+
+    Args:
+        guess_params (array-like): Array with dimensions c x 3 where c is the number of Gaussian components and 3 represents mean, SD, and number parameter.
+    """
+    N = len(x)
+    guess_params = np.array(guess_params)
+    n_components = guess_params.shape[0]
+    assert guess_params.shape[1] == 3
+
+    def loss(params):
+        params = params.reshape((n_components, 3))
+        mu = params[:, 0]
+        sd = params[:, 1]
+        n = params[:, 2]
+        n = n / np.sum(n)
+
+        # (N,) array where each column represent the component probability
+        prob = (
+            n
+            * gaussian(
+                np.array([x for i in range(n_components)]).T,
+                mu,
+                sd,
+                np.ones(n_components),
+            )
+        ).sum(axis=1)
+        lnl = np.sum(np.log(prob))
+        return -lnl
+
+    result = minimize(loss, guess_params, method=method, **kwargs)
     return result
 
 

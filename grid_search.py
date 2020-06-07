@@ -64,7 +64,7 @@ def model_v3(lv_dist, theta, delta_v, **kwargs):
     # For each data point in hv and lv:
     # Use hv's data point if line of sight is within theta otherwise use lv data point
     lv_cond = los > theta
-    v_sim = np.choose(lv_cond, [hv, lv])``
+    v_sim = np.choose(lv_cond, [hv, lv])
     return v_sim
 
 
