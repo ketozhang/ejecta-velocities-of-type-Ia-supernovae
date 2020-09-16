@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/183695689.svg)](https://zenodo.org/badge/latestdoi/183695689)
+
 All analysis with the paper is organized in a Jupyter notebook. Please open the [report.ipynb](report.ipynb) on GitHub or your own Jupyter instance. All other useful files are described below.
 
 - `report.ipynb`
